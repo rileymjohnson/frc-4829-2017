@@ -42,6 +42,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
+		ldrive.setSafetyEnabled(false)
+		drive.setSafetyEnabled(false)
+		
 		if(isFrontCamera)
 		{
 			f_camera = CameraServer.getInstance().startAutomaticCapture(0);
@@ -101,26 +104,26 @@ public class Robot extends IterativeRobot {
 		ldrive.set(wheel_stick.getX() + wheel_stick.getY());
 		rdrive.set(wheel_stick.getX() - wheel_stick.getY());
 		
-		if(cameraToggle.get() && !switchedLastLoop)
-		{
-			isFrontCamera = !isFrontCamera;
-		}
-		switchedLastLoop = cameraToggle.get();
-		
-		if(isFrontCamera)
-		{
-			b_camera.setFPS(-1);
-			f_camera = CameraServer.getInstance().startAutomaticCapture(0);
-			f_camera.setResolution(width, height);
-			f_camera.setFPS(fps);
-		}
-		else
-		{
-			f_camera.setFPS(-1);
-			b_camera = CameraServer.getInstance().startAutomaticCapture(1);
-			b_camera.setResolution(width, height);
-			b_camera.setFPS(fps);
-		}
+//		if(cameraToggle.get() && !switchedLastLoop)
+//		{
+//			isFrontCamera = !isFrontCamera;
+//		}
+//		switchedLastLoop = cameraToggle.get();
+//		
+//		if(isFrontCamera)
+//		{
+//			b_camera.setFPS(-1);
+//			f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+//			f_camera.setResolution(width, height);
+//			f_camera.setFPS(fps);
+//		}
+//		else
+//		{
+//			f_camera.setFPS(-1);
+//			b_camera = CameraServer.getInstance().startAutomaticCapture(1);
+//			b_camera.setResolution(width, height);
+//			b_camera.setFPS(fps);
+//		}
 		
 		//double axis = climb_stick.getY();
 		//cdrive.set(axis*0.4);
@@ -133,4 +136,6 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		LiveWindow.run();
 	}
+
+
 }
