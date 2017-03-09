@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Robot extends IterativeRobot {
 	
-	CANTalon ldrive = new CANTalon(4);
-	CANTalon rdrive = new CANTalon(3);
-	// CANTalon cdrive = new CANTalon(0);
+	CANTalon ldrive = new CANTalon(3);
+	CANTalon rdrive = new CANTalon(2);
+	CANTalon cdrive = new CANTalon(0);
 	
 	RobotDrive myRobot = new RobotDrive(ldrive, rdrive);
 	
@@ -25,13 +25,9 @@ public class Robot extends IterativeRobot {
 	//Joystick climb_stick = new Joystick(1);
 	Timer timer = new Timer();
 	UsbCamera f_camera = new UsbCamera("f_camera", 0);
-	UsbCamera b_camera = new UsbCamera("b_camera", 1);
-	boolean isFrontCamera = true;
-	boolean switchedLastLoop = false;
-	JoystickButton cameraToggle = new JoystickButton(wheel_stick, 2);
-	int width = 40;
-	int height = 30;
-	int fps = 4;
+	int width = 400;
+	int height = 300;
+	int fps = 30;
 	
 	//constants
 	float autonomousTime = 1.4f;
@@ -42,21 +38,9 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		ldrive.setSafetyEnabled(false)
-		drive.setSafetyEnabled(false)
-		
-		if(isFrontCamera)
-		{
-			f_camera = CameraServer.getInstance().startAutomaticCapture(0);
-			f_camera.setResolution(width, height);
-			f_camera.setFPS(fps);
-		}
-		else
-		{
-			b_camera = CameraServer.getInstance().startAutomaticCapture(1);
-			b_camera.setResolution(width, height);
-			b_camera.setFPS(fps);
-		}
+		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+		f_camera.setResolution(width, height);
+		f_camera.setFPS(fps);
 	}
 	
 
@@ -101,32 +85,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		ldrive.set(wheel_stick.getX() + wheel_stick.getY());
-		rdrive.set(wheel_stick.getX() - wheel_stick.getY());
+		ldrive.set(wheel_stick.getX() - wheel_stick.getY());
+		rdrive.set(wheel_stick.getX() + wheel_stick.getY());	
+		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+		f_camera.setResolution(width, height);
+		f_camera.setFPS(fps);
+	
 		
-//		if(cameraToggle.get() && !switchedLastLoop)
-//		{
-//			isFrontCamera = !isFrontCamera;
-//		}
-//		switchedLastLoop = cameraToggle.get();
-//		
-//		if(isFrontCamera)
-//		{
-//			b_camera.setFPS(-1);
-//			f_camera = CameraServer.getInstance().startAutomaticCapture(0);
-//			f_camera.setResolution(width, height);
-//			f_camera.setFPS(fps);
-//		}
-//		else
-//		{
-//			f_camera.setFPS(-1);
-//			b_camera = CameraServer.getInstance().startAutomaticCapture(1);
-//			b_camera.setResolution(width, height);
-//			b_camera.setFPS(fps);
-//		}
-		
-		//double axis = climb_stick.getY();
-		//cdrive.set(axis*0.4);
+		double axis = climb_stick.getY();
+		cdrive.set(axis*0.4);
 	}
 
 	/**
