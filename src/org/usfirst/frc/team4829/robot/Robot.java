@@ -8,9 +8,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Robot extends IterativeRobot {
@@ -22,7 +19,7 @@ public class Robot extends IterativeRobot {
 	RobotDrive myRobot = new RobotDrive(ldrive, rdrive);
 	
 	Joystick wheel_stick = new Joystick(0);
-	//Joystick climb_stick = new Joystick(1);
+	Joystick climb_stick = new Joystick(1);
 	Timer timer = new Timer();
 	UsbCamera f_camera = new UsbCamera("f_camera", 0);
 	int width = 400;
