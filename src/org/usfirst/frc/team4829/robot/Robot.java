@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import java.lang.Math;
 
 public class Robot extends IterativeRobot {
 	
@@ -21,7 +22,6 @@ public class Robot extends IterativeRobot {
 	Joystick wheel_stick = new Joystick(0);
 	Joystick climb_stick = new Joystick(1);
 	Timer timer = new Timer();
-	UsbCamera f_camera = new UsbCamera("f_camera", 0);
 	int width = 400;
 	int height = 300;
 	int fps = 30;
@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+		UsbCamera f_camera = CameraServer.getInstance().startAutomaticCapture(0);
 		f_camera.setResolution(width, height);
 		f_camera.setFPS(fps);
 	}
@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		// Drive for 2 seconds
 		if (timer.get() < autonomousTime) {
-			myRobot.drive(-0.5, 0.0); // drive forwards half speed
+			myRobot.drive(0.5, 0.0); // drive forwards half speed
 		} else {
 			myRobot.drive(0.0, 0.0); // stop robot
 		}
@@ -84,13 +84,9 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		ldrive.set(wheel_stick.getX() - wheel_stick.getY());
 		rdrive.set(wheel_stick.getX() + wheel_stick.getY());	
-		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
-		f_camera.setResolution(width, height);
-		f_camera.setFPS(fps);
-	
 		
 		double axis = climb_stick.getY();
-		cdrive.set(axis*0.4);
+		cdrive.set(-Math.abs(axis));
 	}
 
 	/**
