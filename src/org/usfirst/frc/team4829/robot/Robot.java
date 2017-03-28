@@ -1,9 +1,12 @@
 package org.usfirst.frc.team4829.robot;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -32,8 +35,8 @@ public class Robot extends IterativeRobot {
 	int width = 400;
 	int height = 300;
 	int fps = 30;
-//	Encoder leftE = new Encoder(0, 1, false, Encoder.EncodingType.E4T);
-//	Encoder rightE = new Encoder(2, 3, false, Encoder.EncodingType.E4T);
+	Encoder leftE = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder rightE = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	// 4 is digital input channel for th LED
 	
 	//constants
@@ -60,13 +63,13 @@ public class Robot extends IterativeRobot {
 		rightE.setReverseDirection(true);
 		rightE.setSamplesToAverage(7);
 		
-		ldrive.changeControlMode(ControlMode.Position);
-		ldrive.setFeedbackDevice(leftE);
+		ldrive.changeControlMode(TalonControlMode.Position);
+		ldrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		ldrive.setPID(.5, .001, 0);
 		ldrive.enableControl();
 		
-		rdrive.changeControlMode(ControlMode.Position);
-		rdrive.setFeedbackDevice(leftE);
+		rdrive.changeControlMode(TalonControlMode.Position);
+		rdrive.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		rdrive.setPID(.5, .001, 0);
 		rdrive.enableControl();
 		
