@@ -8,8 +8,10 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import java.lang.Math;
 
 public class Robot extends IterativeRobot {
 	
@@ -22,12 +24,20 @@ public class Robot extends IterativeRobot {
 	Joystick wheel_stick = new Joystick(0);
 	Joystick climb_stick = new Joystick(1);
 	Timer timer = new Timer();
+	UsbCamera f_camera = new UsbCamera("f_camera", 0);
+	boolean isFrontCamera = true;
+	boolean switchedLastLoop = false;
+	
+	//JoystickButton cameraToggle = new JoystickButton(wheel_stick, 2);
 	int width = 400;
 	int height = 300;
 	int fps = 30;
+//	Encoder leftE = new Encoder(0, 1, false, Encoder.EncodingType.E4T);
+//	Encoder rightE = new Encoder(2, 3, false, Encoder.EncodingType.E4T);
+	// 4 is digital input channel for th LED
 	
 	//constants
-	float autonomousTime = 1.4f;
+	float autonomousTime = 10f;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -35,7 +45,33 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void robotInit() {
-		UsbCamera f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+		//ldrive.setSafetyEnabled(false);
+		//drive.setSafetyEnabled(false);
+		
+		leftE.setMaxPeriod(.1);
+		leftE.setMinRate(10);
+		leftE.setDistancePerPulse(5);
+		leftE.setReverseDirection(true);
+		leftE.setSamplesToAverage(7);
+	
+		rightE.setMaxPeriod(.1);
+		rightE.setMinRate(10);
+		rightE.setDistancePerPulse(5);
+		rightE.setReverseDirection(true);
+		rightE.setSamplesToAverage(7);
+		
+		ldrive.changeControlMode(ControlMode.Position);
+		ldrive.setFeedbackDevice(leftE);
+		ldrive.setPID(.5, .001, 0);
+		ldrive.enableControl();
+		
+		rdrive.changeControlMode(ControlMode.Position);
+		rdrive.setFeedbackDevice(leftE);
+		rdrive.setPID(.5, .001, 0);
+		rdrive.enableControl();
+		
+		
+		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
 		f_camera.setResolution(width, height);
 		f_camera.setFPS(fps);
 	}
@@ -59,11 +95,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		// Drive for 2 seconds
-		if (timer.get() < autonomousTime) {
-			myRobot.drive(0.5, 0.0); // drive forwards half speed
-		} else {
+	//	if (timer.get() < autonomousTime) {
+			//myRobot.drive(0.5, 0.0); // drive forwards half speed
+			ldrive.set(20);
+			rdrive.set(20);
+		//} else {
 			myRobot.drive(0.0, 0.0); // stop robot
-		}
+	//	}
 	}
 
 	/**
@@ -83,7 +121,13 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		ldrive.set(wheel_stick.getX() - wheel_stick.getY());
-		rdrive.set(wheel_stick.getX() + wheel_stick.getY());	
+		rdrive.set(wheel_stick.getX() + wheel_stick.getY());
+		
+		
+		f_camera = CameraServer.getInstance().startAutomaticCapture(0);
+		f_camera.setResolution(width, height);
+		f_camera.setFPS(fps);
+	
 		
 		double axis = climb_stick.getY();
 		cdrive.set(-Math.abs(axis));
@@ -96,6 +140,4 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		LiveWindow.run();
 	}
-
-
 }
